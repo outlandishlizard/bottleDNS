@@ -1,6 +1,6 @@
 # bottleDNS
 
-A tiny python DNS server providing a "flask-like" decorator-based interface.
+A tiny python DNS server providing a "flask-like" decorator-based interface. Provided under the MIT license, see LICENSE
 
 The main use case I had in mind building this was security research-- I needed a DNS server whose behavior (including
 logging) was easy to tweak quickly.
