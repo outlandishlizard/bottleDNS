@@ -113,8 +113,9 @@ def printreq(req):
     addr = addr_fn()
     rd = dnslib.A(addr)
     rr = dnslib.RR(qname, rdata=rd)
-    response = dnslib.DNSRecord(dnslib.DNSHeader(id=req.header.id, rname=req.q.qname))
+    response = dnslib.DNSRecord(dnslib.DNSHeader(id=req.header.id, rname=req.q.qname, qr=1, auth=1))
     response.add_answer(rr)
+    response.q
     return response.pack()
 
 
