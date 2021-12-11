@@ -23,16 +23,18 @@ ctx = BottleContext()
 
 class NameTree(object):
     # This class implements a hostname "tree" using nested dictionaries, with support for using * as a wildcard at any
-    # layer of the name. The special key NameTree.LEAVES is used to store actual records that exist for the name at the
-    # given layer.
+    # layer of the name. The special key NameTree.LEAVES is used to store the functions that generate records for the 
+    # name at the given layer.
     # So an A record for www.example.com of 1.2.3.4 becomes:
     # {"com":
     #   {example:
     #       {www:
-    #       {LEAVES:{'A': '1.2.3.4'}
+    #       {LEAVES:{'A': lambda: '1.2.3.4'}
     #       }
     #   }
     # }
+    # lambda notation is used here rather than defining a very simple function that takes no arguments and returns
+    # '1.2.3.4' for the sake of brevity, you'd normally bind to a named function here using the @record decorator.
     LEAVES = 0
 
     def __init__(self):
