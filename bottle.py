@@ -112,10 +112,12 @@ def printreq(req):
     addr_fn = lookup.get(qname)['A'][0]
     addr = addr_fn()
     rd = dnslib.A(addr)
-    rr = dnslib.RR(qname, rdata=rd)
-    response = dnslib.DNSRecord(dnslib.DNSHeader(id=req.header.id, rname=req.q.qname, qr=1, auth=1))
+    rr = dnslib.RR(qname, dnslib.QTYPE.A, ttl=60, rdata=rd)
+    # response = dnslib.DNSRecord(dnslib.DNSHeader(id=req.header.id, rname=req.q.qname, qr=1))
+    response = req.reply()
     response.add_answer(rr)
-    response.q
+    # auth = dnslib.RR(qname, dnslib.QTYPE.SOA, ttl=60, rdata=dnslib.SOA)
+
     return response.pack()
 
 
