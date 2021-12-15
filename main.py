@@ -1,8 +1,12 @@
+import logging
 import random
 
 from bottle import record, run, ctx
 
+logger = logging.getLogger("bottleDNS")
 
+
+# logger.setLevel(0)
 # Two examples of simple, static records.
 @record('www.localhost.local')
 def do_localhost():
@@ -32,7 +36,7 @@ def do_echo():
 def do_phonehome():
     # Log requests to any subdomain under a given name, useful for finding otherwise blind CSRF/SSRF/etc
     r = ctx[1]
-    print("Got a phone home request for:", r.questions[0].qname)
+    logger.critical("{} sent a phone home request for: {}".format(ctx[0][0], r.questions[0].qname))
     return '0.0.0.0'
 
 

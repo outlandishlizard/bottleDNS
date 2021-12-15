@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from socketserver import ThreadingUDPServer, BaseRequestHandler
 
@@ -6,7 +7,13 @@ import dnslib
 records = defaultdict(dict)
 _ctx = None
 
+logger = logging.getLogger("bottleDNS")
+fileHandler = logging.FileHandler('./bottle.log')
 
+logger.addHandler(fileHandler)
+
+
+# logger.setLevel(0)
 # We need this "proxy" object because directly importing _ctx doesn't preserve mutations made to it in this scope--
 # it remains None forever if imported directly. This is way less neat than werkzeug's approach which works with
 # greenlets etc-- this implementation is only going to work right for threads.
@@ -111,7 +118,14 @@ class BottleHandler(BaseRequestHandler):
 def printreq(req):
     # TODO this is a mess
     qname = req.questions[0].qname
-    addr_fn = lookup.get(qname)['A'][0]
+    try:
+        addr_fn = lookup.get(qname)['A'][0]
+    except KeyError as e:
+        logger.warning("{} asked for domain we don't know: {}".format(ctx[0][0], str(e).split()[0]))
+        response = req.reply()
+        response.header.rcode = getattr(dnslib.RCODE, 'NXDOMAIN')
+        return response.pack()
+
     addr = addr_fn()
     rd = dnslib.A(addr)
     rr = dnslib.RR(qname, dnslib.QTYPE.A, ttl=60, rdata=rd)
